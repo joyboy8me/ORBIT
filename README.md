@@ -63,7 +63,7 @@ Start the Vite development server:
 ```bash
 npm run dev
 ```
-
+```This project is running properly```
 Open the local URL printed by Vite (normally `http://localhost:5173`). The
 public privacy notice is also available locally at `/privacy`.
 
