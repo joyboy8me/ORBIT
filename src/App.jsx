@@ -1,0 +1,846 @@
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import Taskbar from "./components/Taskbar.jsx";
+import Clock from "./components/Clock.jsx";
+import DashboardGrid from "./components/DashboardGrid.jsx";
+import HeroView from "./components/HeroView.jsx";
+import SettingsPage from "./components/SettingsPage.jsx";
+import { storageGetMultiple, storageSet } from "./utils/storage.js";
+import { STORAGE_KEY_UI_THEME, PUBLIC_THEME_IDS } from "./themes/index.js";
+
+const STORAGE = {
+  wallpaper: "settings_wallpaper_v1",
+  showTimer: "settings_show_timer_v1",
+  showTodo: "settings_show_todo_v1",
+  showStreakGrid: "settings_show_streak_grid_v1",
+  showSongPlayer: "settings_show_song_player_v1",
+  showTaskbar: "settings_show_taskbar_v1",
+  themeColor: "settings_theme_color_v1",
+  shortcuts: "settings_shortcuts_v1",
+  activeStep: "settings_active_step_v1",
+  showWaterReminder: "settings_show_water_v1",
+  showImportantTabs: "settings_show_imp_tabs_v1",
+  showTimeBoxing: "settings_show_timebox_v1",
+  focusNotifEnabled: "settings_focus_notif_v1",
+  focusEndRingtone: "settings_focus_ringtone_v1",
+  restEndRingtone: "settings_rest_ringtone_v1",
+  waterGoalMl: "settings_water_goal_v1",
+  waterNotifEnabled: "settings_water_notif_v1",
+  waterRingtone: "settings_water_ringtone_v1",
+  songPlaylistUrl: "settings_song_playlist_v1",
+  songAutoPlay: "settings_song_autoplay_v1",
+  songCustomVideo: "settings_song_custom_video_v1",
+  lofiStations: "settings_lofi_stations_v1",
+  importantTabsConfig: "settings_imp_tabs_config_v1",
+  timeBoxingGroups: "settings_timebox_groups_v2",
+  themeTextColorIndex: "settings_theme_text_color_idx_v1",
+  timeboxingLastResetDate: "settings_timebox_last_reset_utc_v1",
+  uiTheme: STORAGE_KEY_UI_THEME,
+  baseFont: "settings_base_font_v1",
+  baseFontSize: "settings_base_font_size_v1",
+  themeColorsMap: "settings_theme_colors_map_v1",
+};
+
+const getTodayUtcDate = () => new Date().toISOString().slice(0, 10);
+
+const makeId = () => {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function")
+    return crypto.randomUUID();
+  return String(Date.now() + Math.random());
+};
+
+const DEFAULT_SHORTCUTS = [
+  { id: 'gemini', title: 'Gemini', url: 'https://gemini.google.com', iconClass: 'ri-gemini-fill' },
+  { id: 'claude', title: 'Claude', url: 'https://claude.ai', iconClass: 'ri-claude-fill' },
+  { id: 'copilot', title: 'Copilot', url: 'https://copilot.microsoft.com', iconClass: 'ri-copilot-fill' },
+  { id: 'openai', title: 'OpenAI', url: 'https://chat.openai.com', iconClass: 'ri-openai-fill' },
+  { id: 'github', title: 'GitHub', url: 'https://github.com', iconClass: 'ri-github-fill' },
+];
+
+const DEFAULT_IMPORTANT_TABS = [
+  { id: "tab-1", title: "Study", iconClass: "ri-book-open-line", links: [] },
+  { id: "tab-2", title: "AI Engineering", iconClass: "ri-gemini-fill", links: [] },
+  { id: "tab-3", title: "Programming", iconClass: "ri-code-s-slash-line", links: [] },
+  { id: "tab-4", title: "News", iconClass: "ri-newspaper-line", links: [] },
+];
+
+const DEFAULT_TIMEBOX_GROUPS = [
+  {
+    id: "brain-stretching",
+    title: "Brain Stretching",
+    iconClass: "ri-brain-line",
+    time: "8:00 am",
+    streak: 0,
+    subtasks: [
+      { id: "bs-1", text: "Morning Meditation", done: false },
+      { id: "bs-2", text: "Read 10 Pages", done: false },
+      { id: "bs-3", text: "Solve A Puzzle", done: false },
+      { id: "bs-4", text: "Plan The Day", done: false },
+    ],
+  },
+  {
+    id: "exercise",
+    title: "Exercise",
+    iconClass: "ri-run-line",
+    time: "8:45 am",
+    streak: 0,
+    subtasks: [
+      { id: "ex-1", text: "Warm Up & Stretch", done: false },
+      { id: "ex-2", text: "Push Ups 3 Sets", done: false },
+      { id: "ex-3", text: "30 Min Cardio", done: false },
+    ],
+  },
+  {
+    id: "leetcode",
+    title: "LeetCode Problem",
+    iconClass: "ri-code-s-slash-line",
+    time: "9:00 am",
+    streak: 0,
+    subtasks: [
+      { id: "lc-1", text: "Solve Problem", done: false },
+      { id: "lc-2", text: "Push Code To Github", done: false },
+      { id: "lc-3", text: "Analyse Optimal Solution", done: false },
+    ],
+  },
+  {
+    id: "project",
+    title: "Project",
+    iconClass: "ri-briefcase-line",
+    time: "11:00 am",
+    streak: 0,
+    subtasks: [
+      { id: "pj-1", text: "Design New Component", done: false },
+      { id: "pj-2", text: "Fix Pending Bugs", done: false },
+      { id: "pj-3", text: "Deploy Latest Build", done: false },
+    ],
+  },
+];
+
+export const DEFAULT_LOFI_STATIONS = [
+  {
+    id: "lofi-zeno-lounge",
+    name: "Lofi Study Lounge 24/7",
+    provider: "Zeno Live Stream",
+    streamUrl: "https://stream.zeno.fm/f3wvbbqmdg8uv",
+    badge: "Lofi Study Lounge",
+    gradient: "from-blue-900/60 via-cyan-950/50 to-slate-900/70",
+  },
+  {
+    id: "lofi-laut-fm",
+    name: "Lofi Hip Hop Radio 24/7",
+    provider: "Laut FM Stream",
+    streamUrl: "https://lofi.stream.laut.fm/lofi",
+    badge: "24/7 Lofi Hip Hop",
+    gradient: "from-purple-900/60 via-indigo-900/50 to-slate-900/70",
+  },
+  {
+    id: "chillhop-beats",
+    name: "Chillhop Radio — Jazzy & Lofi Beats",
+    provider: "Flux FM Stream",
+    streamUrl: "https://streams.fluxfm.de/chillhop/mp3-320/stream.fluxfm.de/",
+    badge: "Chillhop Beats",
+    gradient: "from-amber-900/60 via-orange-950/50 to-slate-950/70",
+  },
+  {
+    id: "ambient-sleep-lofi",
+    name: "Cozy Ambient Rain Lofi",
+    provider: "Zeno Live Stream",
+    streamUrl: "https://stream.zeno.fm/0r0xa792kwzuv",
+    badge: "Ambient Rain Lofi",
+    gradient: "from-emerald-950/60 via-slate-900/60 to-purple-950/70",
+  },
+  {
+    id: "coffee-jazz-lofi",
+    name: "Coffee Shop & Jazz Lofi Radio",
+    provider: "Zeno Live Stream",
+    streamUrl: "https://stream.zeno.fm/7c8bh802kwzuv",
+    badge: "Coffee & Jazz Lofi",
+    gradient: "from-yellow-950/60 via-amber-900/50 to-stone-900/70",
+  },
+];
+
+const MAX_SHORTCUTS = 7;
+
+const DEFAULT_THEME_PALETTE = ["#CBD5E1", "#64748B", "#334155", "#0F172A"];
+
+export const DEFAULT_THEME_PALETTES = {
+  default: ["#CBD5E1", "#64748B", "#334155", "#0F172A"],
+  manga: ["#CBD5E1", "#64748B", "#334155", "#0F172A"],
+  cyberpunk: ["#FF0055", "#00F0FF", "#FFE600", "#120024"],
+  pixel: ["#00FF66", "#009933", "#003311", "#051A0A"],
+  winter: ["#DDF6FF", "#8FD3F4", "#4EA8D8", "#12324A"],
+};
+
+const App = () => {
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState("hero");
+
+  const [wallpaper, setWallpaper] = useState(null);
+  const [showTimer, setShowTimer] = useState(true);
+  const [showTodo, setShowTodo] = useState(true);
+  const [showStreakGrid, setShowStreakGrid] = useState(true);
+  const [showSongPlayer, setShowSongPlayer] = useState(true);
+  const [showTaskbar, setShowTaskbar] = useState(true);
+  const [themeColor, setThemeColor] = useState(DEFAULT_THEME_PALETTE);
+  const [themeColorsMap, setThemeColorsMap] = useState(DEFAULT_THEME_PALETTES);
+  const [themeTextColorIndex, setThemeTextColorIndex] = useState(0);
+  const [shortcuts, setShortcuts] = useState(DEFAULT_SHORTCUTS);
+
+  const [showWaterReminder, setShowWaterReminder] = useState(true);
+  const [showImportantTabs, setShowImportantTabs] = useState(true);
+  const [showTimeBoxing, setShowTimeBoxing] = useState(true);
+
+  const [focusNotifEnabled, setFocusNotifEnabled] = useState(false);
+  const [focusEndRingtone, setFocusEndRingtone] = useState("beep");
+  const [restEndRingtone, setRestEndRingtone] = useState("beep");
+
+  const [waterGoalMl, setWaterGoalMl] = useState(4500);
+  const [waterNotifEnabled, setWaterNotifEnabled] = useState(false);
+  const [waterRingtone, setWaterRingtone] = useState("beep");
+
+  const [songPlaylistUrl, setSongPlaylistUrl] = useState("");
+  const [songAutoPlay, setSongAutoPlay] = useState(false);
+  const [songCustomVideo, setSongCustomVideo] = useState(null);
+  const [lofiStations, setLofiStations] = useState(DEFAULT_LOFI_STATIONS);
+
+  const [importantTabsConfig, setImportantTabsConfig] = useState(DEFAULT_IMPORTANT_TABS);
+  const [timeBoxingGroups, setTimeBoxingGroups] = useState(DEFAULT_TIMEBOX_GROUPS);
+  const [uiTheme, setUiTheme] = useState("default");
+  const [baseFont, setBaseFont] = useState("Gilroy");
+  const [baseFontSize, setBaseFontSize] = useState(16);
+
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [isThemeChanging, setIsThemeChanging] = useState(false);
+  const [resetLayoutTrigger, setResetLayoutTrigger] = useState(0);
+
+  const hydratedRef = useRef(false);
+  const lastResetDateRef = useRef(null);
+
+  /* ── Hydration ── */
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const keys = Object.values(STORAGE);
+        const data = await storageGetMultiple(keys);
+
+        if (cancelled) return;
+
+        const storedWallpaper = data[STORAGE.wallpaper];
+        const storedShowTimer = data[STORAGE.showTimer];
+        const storedShowTodo = data[STORAGE.showTodo];
+        const storedShowStreakGrid = data[STORAGE.showStreakGrid];
+        const storedShowSongPlayer = data[STORAGE.showSongPlayer];
+        const storedShowTaskbar = data[STORAGE.showTaskbar];
+        const storedThemeColor = data[STORAGE.themeColor];
+        const storedShortcuts = data[STORAGE.shortcuts];
+        const storedActiveStepObj = data[STORAGE.activeStep];
+        const storedShowWater = data[STORAGE.showWaterReminder];
+        const storedShowImpTabs = data[STORAGE.showImportantTabs];
+        const storedShowTimeBox = data[STORAGE.showTimeBoxing];
+        const storedFocusNotif = data[STORAGE.focusNotifEnabled];
+        const storedFocusRing = data[STORAGE.focusEndRingtone];
+        const storedRestRing = data[STORAGE.restEndRingtone];
+        const storedWaterGoal = data[STORAGE.waterGoalMl];
+        const storedWaterNotif = data[STORAGE.waterNotifEnabled];
+        const storedWaterRing = data[STORAGE.waterRingtone];
+        const storedPlaylist = data[STORAGE.songPlaylistUrl];
+        const storedAutoPlay = data[STORAGE.songAutoPlay];
+        const storedCustomVideo = data[STORAGE.songCustomVideo];
+        const storedLofiStations = data[STORAGE.lofiStations];
+        const storedImpTabsCfg = data[STORAGE.importantTabsConfig];
+        let storedTimeboxGroups = data[STORAGE.timeBoxingGroups];
+        const storedThemeTextIdx = data[STORAGE.themeTextColorIndex];
+        const storedResetDate = data[STORAGE.timeboxingLastResetDate];
+        const storedUiTheme = data[STORAGE.uiTheme];
+        const storedBaseFont = data[STORAGE.baseFont];
+        const storedBaseFontSize = data[STORAGE.baseFontSize];
+
+        const todayUtc = getTodayUtcDate();
+
+        // Check if a new UTC 00 day (5:30 AM IST) has arrived since last reset
+        if (Array.isArray(storedTimeboxGroups)) {
+          if (storedResetDate && storedResetDate !== todayUtc) {
+            storedTimeboxGroups = storedTimeboxGroups.map((group) => {
+              const isCompleted =
+                group.subtasks?.length > 0 && group.subtasks.every((s) => s.done);
+              return {
+                ...group,
+                streak: isCompleted ? (group.streak || 0) + 1 : (group.streak || 0),
+                subtasks: (group.subtasks || []).map((s) => ({ ...s, done: false })),
+              };
+            });
+            storageSet(STORAGE.timeBoxingGroups, storedTimeboxGroups);
+            storageSet(STORAGE.timeboxingLastResetDate, todayUtc);
+          } else if (!storedResetDate) {
+            storageSet(STORAGE.timeboxingLastResetDate, todayUtc);
+          }
+        }
+
+        lastResetDateRef.current = todayUtc;
+
+        if (storedWallpaper && typeof storedWallpaper === "object") setWallpaper(storedWallpaper);
+        if (typeof storedShowTimer === "boolean") setShowTimer(storedShowTimer);
+        if (typeof storedShowTodo === "boolean") setShowTodo(storedShowTodo);
+        if (typeof storedShowStreakGrid === "boolean") setShowStreakGrid(storedShowStreakGrid);
+        if (typeof storedShowSongPlayer === "boolean") setShowSongPlayer(storedShowSongPlayer);
+        if (typeof storedShowTaskbar === "boolean") setShowTaskbar(storedShowTaskbar);
+        const storedThemeColorsMap = data[STORAGE.themeColorsMap];
+        let activeThemeMap = { ...DEFAULT_THEME_PALETTES };
+        if (storedThemeColorsMap && typeof storedThemeColorsMap === "object") {
+          activeThemeMap = { ...DEFAULT_THEME_PALETTES, ...storedThemeColorsMap };
+        } else if (storedThemeColor) {
+          if (Array.isArray(storedThemeColor) && storedThemeColor.length === 4) {
+            activeThemeMap.default = storedThemeColor;
+          } else if (typeof storedThemeColor === "string" && storedThemeColor.trim().startsWith("#")) {
+            const c = storedThemeColor.trim();
+            activeThemeMap.default = [c, c, c, c];
+          }
+        }
+        setThemeColorsMap(activeThemeMap);
+
+        const currentUiTheme = (typeof storedUiTheme === "string" && PUBLIC_THEME_IDS.has(storedUiTheme)) ? storedUiTheme : "default";
+        const activePalette = activeThemeMap[currentUiTheme] || DEFAULT_THEME_PALETTES[currentUiTheme] || DEFAULT_THEME_PALETTES.default;
+        setThemeColor(activePalette);
+
+        if (typeof storedThemeTextIdx === "number" && storedThemeTextIdx >= 0 && storedThemeTextIdx <= 3) {
+          setThemeTextColorIndex(storedThemeTextIdx);
+        }
+        if (Array.isArray(storedShortcuts) && storedShortcuts.length > 0) setShortcuts(storedShortcuts);
+
+        if (storedActiveStepObj &&
+          typeof storedActiveStepObj === "object" &&
+          storedActiveStepObj.dateUtc === getTodayUtcDate() &&
+          (storedActiveStepObj.step === "dashboard" || storedActiveStepObj.step === "hero")
+        ) {
+          setActiveStep(storedActiveStepObj.step);
+        } else {
+          setActiveStep("hero");
+        }
+
+        if (typeof storedShowWater === "boolean") setShowWaterReminder(storedShowWater);
+        if (typeof storedShowImpTabs === "boolean") setShowImportantTabs(storedShowImpTabs);
+        if (typeof storedShowTimeBox === "boolean") setShowTimeBoxing(storedShowTimeBox);
+        if (typeof storedFocusNotif === "boolean") setFocusNotifEnabled(storedFocusNotif);
+        if (typeof storedFocusRing === "string") setFocusEndRingtone(storedFocusRing);
+        if (typeof storedRestRing === "string") setRestEndRingtone(storedRestRing);
+        if (typeof storedWaterGoal === "number" && storedWaterGoal > 0) setWaterGoalMl(storedWaterGoal);
+        if (typeof storedWaterNotif === "boolean") setWaterNotifEnabled(storedWaterNotif);
+        if (typeof storedWaterRing === "string") setWaterRingtone(storedWaterRing);
+        if (typeof storedPlaylist === "string") setSongPlaylistUrl(storedPlaylist);
+        if (typeof storedAutoPlay === "boolean") setSongAutoPlay(storedAutoPlay);
+        if (storedCustomVideo) setSongCustomVideo(storedCustomVideo);
+        let parsedImpTabs = storedImpTabsCfg;
+        if (typeof storedImpTabsCfg === "string") {
+          try { parsedImpTabs = JSON.parse(storedImpTabsCfg); } catch { parsedImpTabs = null; }
+        }
+        if (Array.isArray(parsedImpTabs)) setImportantTabsConfig(parsedImpTabs);
+        if (Array.isArray(storedLofiStations) && storedLofiStations.length > 0) setLofiStations(storedLofiStations);
+        if (Array.isArray(storedTimeboxGroups) && storedTimeboxGroups.length > 0) setTimeBoxingGroups(storedTimeboxGroups);
+        if (typeof storedUiTheme === "string" && PUBLIC_THEME_IDS.has(storedUiTheme)) setUiTheme(storedUiTheme);
+        else if (storedUiTheme === "winter") storageSet(STORAGE.uiTheme, "default");
+        if (typeof storedBaseFont === "string" && storedBaseFont.trim()) setBaseFont(storedBaseFont);
+        if (typeof storedBaseFontSize === "number" && storedBaseFontSize >= 12 && storedBaseFontSize <= 24) setBaseFontSize(storedBaseFontSize);
+
+        // Mark hydrated BEFORE React flushes the batch above, so persistence
+        // effects that fire from these state updates are correctly allowed.
+        if (!cancelled) {
+          hydratedRef.current = true;
+          setIsHydrated(true);
+        }
+      } catch (err) {
+        console.error("App hydration error:", err);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, []);
+
+  /* ── Persistence effects ── */
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.wallpaper, wallpaper); }, [wallpaper]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.showTimer, showTimer); }, [showTimer]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.showTodo, showTodo); }, [showTodo]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.showStreakGrid, showStreakGrid); }, [showStreakGrid]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.showSongPlayer, showSongPlayer); }, [showSongPlayer]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.showTaskbar, showTaskbar); }, [showTaskbar]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.themeColor, themeColor); }, [themeColor]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.themeColorsMap, themeColorsMap); }, [themeColorsMap]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.shortcuts, shortcuts); }, [shortcuts]);
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    storageSet(STORAGE.activeStep, { step: activeStep, dateUtc: getTodayUtcDate() });
+  }, [activeStep]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.showWaterReminder, showWaterReminder); }, [showWaterReminder]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.showImportantTabs, showImportantTabs); }, [showImportantTabs]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.showTimeBoxing, showTimeBoxing); }, [showTimeBoxing]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.focusNotifEnabled, focusNotifEnabled); }, [focusNotifEnabled]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.focusEndRingtone, focusEndRingtone); }, [focusEndRingtone]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.restEndRingtone, restEndRingtone); }, [restEndRingtone]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.waterGoalMl, waterGoalMl); }, [waterGoalMl]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.waterNotifEnabled, waterNotifEnabled); }, [waterNotifEnabled]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.waterRingtone, waterRingtone); }, [waterRingtone]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.songPlaylistUrl, songPlaylistUrl); }, [songPlaylistUrl]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.songAutoPlay, songAutoPlay); }, [songAutoPlay]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.songCustomVideo, songCustomVideo); }, [songCustomVideo]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.lofiStations, lofiStations); }, [lofiStations]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.importantTabsConfig, importantTabsConfig); }, [importantTabsConfig]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.timeBoxingGroups, timeBoxingGroups); }, [timeBoxingGroups]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.themeTextColorIndex, themeTextColorIndex); }, [themeTextColorIndex]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.uiTheme, uiTheme); }, [uiTheme]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.baseFont, baseFont); }, [baseFont]);
+  useEffect(() => { if (!hydratedRef.current) return; storageSet(STORAGE.baseFontSize, baseFontSize); }, [baseFontSize]);
+
+  /* ── Periodic & Focus Check for 00:00 UTC / 5:30 AM IST Daily Reset ── */
+  useEffect(() => {
+    if (!isHydrated) return;
+
+    const checkAndRunReset = () => {
+      const todayUtc = getTodayUtcDate();
+      if (lastResetDateRef.current && lastResetDateRef.current !== todayUtc) {
+        lastResetDateRef.current = todayUtc;
+        storageSet(STORAGE.timeboxingLastResetDate, todayUtc);
+
+        setTimeBoxingGroups((prevGroups) => {
+          if (!Array.isArray(prevGroups)) return prevGroups;
+          const resetGroups = prevGroups.map((group) => {
+            const isCompleted =
+              group.subtasks?.length > 0 && group.subtasks.every((s) => s.done);
+            return {
+              ...group,
+              streak: isCompleted ? (group.streak || 0) + 1 : (group.streak || 0),
+              subtasks: (group.subtasks || []).map((s) => ({ ...s, done: false })),
+            };
+          });
+          storageSet(STORAGE.timeBoxingGroups, resetGroups);
+          return resetGroups;
+        });
+      }
+    };
+
+    const intervalId = setInterval(checkAndRunReset, 30000);
+    const handleFocusOrVisibility = () => {
+      if (document.visibilityState === "visible") {
+        checkAndRunReset();
+      }
+    };
+
+    window.addEventListener("visibilitychange", handleFocusOrVisibility);
+    window.addEventListener("focus", checkAndRunReset);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener("visibilitychange", handleFocusOrVisibility);
+      window.removeEventListener("focus", checkAndRunReset);
+    };
+  }, [isHydrated]);
+
+  /* ── Dynamic Google Font Loader for Base Font ── */
+  useEffect(() => {
+    if (!baseFont || baseFont === "Gilroy" || baseFont === "Default") {
+      document.documentElement.style.setProperty("--font-base-custom", `"Gilroy", sans-serif`);
+      return;
+    }
+    const fontId = `google-font-${baseFont.replace(/\s+/g, "-").toLowerCase()}`;
+    if (!document.getElementById(fontId)) {
+      const link = document.createElement("link");
+      link.id = fontId;
+      link.rel = "stylesheet";
+      link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(baseFont)}:wght@300;400;500;600;700;800&display=swap`;
+      document.head.appendChild(link);
+    }
+    document.documentElement.style.setProperty("--font-base-custom", `"${baseFont}", sans-serif`);
+  }, [baseFont]);
+
+  /* ── Dynamic Base Font Size Property ── */
+  useEffect(() => {
+    document.documentElement.style.setProperty("--base-font-size", `${baseFontSize}px`);
+  }, [baseFontSize]);
+
+  /* ── Apply UI theme to <html> data attribute ── */
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", uiTheme);
+    return () => { document.documentElement.removeAttribute("data-theme"); };
+  }, [uiTheme]);
+
+  /* ── Theme CSS variables ── */
+  useEffect(() => {
+    const colors = Array.isArray(themeColor) && themeColor.length === 4
+      ? themeColor
+      : ["#CBD5E1", "#64748B", "#334155", "#0F172A"];
+
+    const activeTextColor = uiTheme === "winter"
+      ? "#F4FBFF"
+      : (colors[themeTextColorIndex] ?? colors[0]);
+
+    document.documentElement.style.setProperty("--theme-1", colors[0]);
+    document.documentElement.style.setProperty("--theme-2", colors[1]);
+    document.documentElement.style.setProperty("--theme-3", colors[2]);
+    document.documentElement.style.setProperty("--theme-4", colors[3]);
+    document.documentElement.style.setProperty("--theme", uiTheme === "winter" ? colors[1] : colors[2]);
+    document.documentElement.style.setProperty("--theme-text", activeTextColor);
+  }, [themeColor, themeTextColorIndex, uiTheme]);
+
+  /* ── Background ── */
+  const background = useMemo(() => {
+    if (wallpaper?.type === "video" && typeof wallpaper?.dataUrl === "string") {
+      return (
+        <video
+          src={wallpaper.dataUrl}
+          className="theme-wallpaper h-full w-full object-cover select-none"
+          autoPlay muted loop playsInline
+        />
+      );
+    }
+    if (wallpaper?.type === "image" && typeof wallpaper?.dataUrl === "string") {
+      return <img src={wallpaper.dataUrl} alt="" className="theme-wallpaper h-full w-full object-cover select-none" />;
+    }
+    const defaultWallpaperForTheme = {
+      manga: "/manga-wallpaper.jpg",
+      cyberpunk: "/cyberpunk-wallpaper.png",
+      pixel: "/cli-wallpaper.jpg",
+      winter: "/winter-wallpaper.png",
+      default: "/default-wallpaper.jpg",
+    }[uiTheme] || "/default-wallpaper.jpg";
+
+    return <img src={defaultWallpaperForTheme} alt="" className="theme-wallpaper h-full w-full object-cover select-none object-top" />;
+  }, [wallpaper, uiTheme]);
+
+  /* ── Shortcut helpers ── */
+  const updateShortcut = (id, patch) =>
+    setShortcuts((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
+
+  const removeShortcut = (id) =>
+    setShortcuts((prev) => prev.filter((s) => s.id !== id));
+
+  const addShortcut = () => {
+    setShortcuts((prev) => {
+      if (prev.length >= MAX_SHORTCUTS) return prev;
+      return [...prev, { id: makeId(), title: "New", url: "https://" }];
+    });
+  };
+
+  const readFileAsDataUrl = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => reject(new Error("read_error"));
+      reader.readAsDataURL(file);
+    });
+
+  const handleWallpaperPick = async (fileOrWallpaper) => {
+    if (!fileOrWallpaper) return;
+    if (fileOrWallpaper.dataUrl && fileOrWallpaper.type) {
+      setWallpaper(fileOrWallpaper);
+      return;
+    }
+    const file = fileOrWallpaper;
+    const maxBytes = 20 * 1024 * 1024;
+    if (file.size > maxBytes) return;
+    const dataUrl = await readFileAsDataUrl(file);
+    const type = file.type.startsWith("video/") ? "video" : "image";
+    setWallpaper({ type, dataUrl, name: file.name });
+  };
+
+  const handleShortcutIconPick = async (id, file) => {
+    if (!file) return;
+    const maxBytes = 512 * 1024;
+    if (file.size > maxBytes) return;
+    const dataUrl = await readFileAsDataUrl(file);
+    updateShortcut(id, { iconDataUrl: dataUrl });
+  };
+
+  /* ── Smooth Theme & Wallpaper Transition Handlers ── */
+  const handleUiThemeChange = (newTheme) => {
+    if (!PUBLIC_THEME_IDS.has(newTheme)) return;
+    if (newTheme === uiTheme) return;
+    setIsThemeChanging(true);
+    setUiTheme(newTheme);
+
+    const targetPalette =
+      themeColorsMap[newTheme] ||
+      DEFAULT_THEME_PALETTES[newTheme] ||
+      DEFAULT_THEME_PALETTES.default;
+    setThemeColor(targetPalette);
+
+    setTimeout(() => {
+      setIsThemeChanging(false);
+    }, 280);
+  };
+
+  const handleThemeColorChange = (newColors) => {
+    setThemeColor(newColors);
+    setThemeColorsMap((prev) => ({
+      ...prev,
+      [uiTheme]: newColors,
+    }));
+  };
+
+  const handleWallpaperChange = async (fileOrWallpaper) => {
+    setIsThemeChanging(true);
+    await handleWallpaperPick(fileOrWallpaper);
+    setTimeout(() => {
+      setIsThemeChanging(false);
+    }, 280);
+  };
+
+  const handleWallpaperResetChange = () => {
+    setIsThemeChanging(true);
+    setWallpaper(null);
+    setTimeout(() => {
+      setIsThemeChanging(false);
+    }, 280);
+  };
+
+  const handleResetAllSettings = async () => {
+    setIsThemeChanging(true);
+
+    // Reset State
+    setWallpaper(null);
+    setShowTimer(true);
+    setShowTodo(true);
+    setShowStreakGrid(true);
+    setShowSongPlayer(true);
+    setShowTaskbar(true);
+    setShowWaterReminder(true);
+    setShowImportantTabs(true);
+    setShowTimeBoxing(true);
+
+    setThemeColor(DEFAULT_THEME_PALETTES.default);
+    setThemeColorsMap(DEFAULT_THEME_PALETTES);
+    setThemeTextColorIndex(0);
+    setUiTheme("default");
+    setBaseFont("Gilroy");
+    setBaseFontSize(16);
+
+    setShortcuts(DEFAULT_SHORTCUTS);
+    setFocusNotifEnabled(false);
+    setFocusEndRingtone("beep");
+    setRestEndRingtone("beep");
+    setWaterGoalMl(4500);
+    setWaterNotifEnabled(false);
+    setWaterRingtone("beep");
+
+    setSongPlaylistUrl("");
+    setSongAutoPlay(false);
+    setSongCustomVideo(null);
+    setLofiStations(DEFAULT_LOFI_STATIONS);
+    setImportantTabsConfig(DEFAULT_IMPORTANT_TABS);
+    setTimeBoxingGroups(DEFAULT_TIMEBOX_GROUPS);
+    setResetLayoutTrigger((prev) => prev + 1);
+
+    // Clear and reset Storage
+    try {
+      Object.values(STORAGE).forEach((k) => storageSet(k, null));
+      storageSet("settings_widget_positions_v8_desktop", null);
+      storageSet("settings_widget_positions_v8_laptop", null);
+    } catch {
+      /* ignore */
+    }
+
+    setTimeout(() => {
+      setIsThemeChanging(false);
+    }, 300);
+  };
+
+  const showLoader = !isHydrated || isThemeChanging;
+
+  return (
+    <div className="theme-bg h-screen w-full bg-black relative overflow-hidden">
+      {/* Minimalist Linear/Vercel Aesthetic Loader Overlay */}
+      <div
+        className={`fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#08080a] transition-opacity duration-300 pointer-events-none ${
+          showLoader ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <div className="flex flex-col items-center gap-4">
+          {/* Minimal Monospace Brand Mark */}
+          <span className="text-[11px] font-medium tracking-[0.4em] text-white/80 font-mono uppercase">
+            O R B I T
+          </span>
+
+          {/* 2px Micro Shimmer Bar */}
+          <div className="w-24 h-[2px] bg-white/10 rounded-full overflow-hidden relative">
+            <div className="absolute inset-y-0 bg-white rounded-full animate-loader-bar" />
+          </div>
+        </div>
+      </div>
+
+      <div className="h-full w-full flex items-center justify-center relative">
+        {background}
+
+        {/* Hero View */}
+        <HeroView
+          shortcuts={shortcuts}
+          onStart={() => setActiveStep("dashboard")}
+          onOpenSettings={() => setSettingsOpen(true)}
+          isVisible={activeStep === "hero"}
+        />
+
+        {/* Clock */}
+        <Clock isDashboard={activeStep === "dashboard"} />
+
+        {/* Taskbar */}
+        {showTaskbar && (
+          <div
+            className={`absolute top-2.5 left-1/2 -translate-x-1/2 awwwards-motion z-30 ${
+              activeStep === "dashboard"
+                ? "translate-y-0 opacity-100 scale-100 pointer-events-auto"
+                : "-translate-y-12 opacity-0 scale-95 pointer-events-none"
+            }`}
+          >
+            <Taskbar shortcuts={shortcuts} />
+          </div>
+        )}
+
+        {/* Dashboard Grid */}
+        <div
+          className={`absolute inset-0 z-20 awwwards-motion pointer-events-none ${
+            activeStep === "dashboard" ? "opacity-100 scale-100" : "opacity-0 scale-95"
+          }`}
+        >
+          <DashboardGrid
+            showTimer={showTimer}
+            showTodo={showTodo}
+            showStreakGrid={showStreakGrid}
+            showSongPlayer={showSongPlayer}
+            showWaterReminder={showWaterReminder}
+            showImportantTabs={showImportantTabs}
+            showTimeBoxing={showTimeBoxing}
+            importantTabsConfig={importantTabsConfig}
+            timeBoxingGroups={timeBoxingGroups}
+            onTimeBoxingGroupsChange={setTimeBoxingGroups}
+            songPlaylistUrl={songPlaylistUrl}
+            songAutoPlay={songAutoPlay}
+            songCustomVideo={songCustomVideo}
+            lofiStations={lofiStations}
+            waterGoalMl={waterGoalMl}
+            resetTrigger={resetLayoutTrigger}
+          />
+        </div>
+
+        {/* Top Right Controls */}
+        <div className="absolute top-2.5 right-5 flex items-center gap-3 pointer-events-auto z-30">
+          <div
+            className={`awwwards-motion ${
+              activeStep === "dashboard"
+                ? "opacity-100 scale-100 pointer-events-auto"
+                : "opacity-0 scale-50 pointer-events-none w-0 overflow-hidden"
+            }`}
+          >
+            <button
+              type="button"
+              onClick={() => setActiveStep("hero")}
+              className="figma-glass-card h-[6.5vh] w-[6.5vh] min-h-[42px] min-w-[42px] rounded-full flex items-center justify-center text-white cursor-pointer transition-all"
+              aria-label="Back to Hero screen"
+            >
+              <i className="ri-close-line text-[2.8vh] relative z-10" />
+            </button>
+          </div>
+
+          {/* Reset Grid Layout CTA */}
+          {activeStep === "dashboard" && (
+            <button
+              type="button"
+              onClick={() => setResetLayoutTrigger((prev) => prev + 1)}
+              className="figma-glass-card h-[6.5vh] w-[6.5vh] min-h-[42px] min-w-[42px] rounded-full flex items-center justify-center text-white cursor-pointer transition-all hover:scale-105 active:scale-95 group"
+              title="Reset dashboard grid layout to default"
+              aria-label="Reset grid layout"
+            >
+              <i className="ri-restart-line text-[2.4vh] relative z-10 group-hover:-rotate-90 transition-transform duration-300" />
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => setSettingsOpen(true)}
+            className="figma-glass-card h-[6.5vh] w-[6.5vh] min-h-[42px] min-w-[42px] rounded-full flex items-center justify-center text-white cursor-pointer transition-all hover:scale-105 active:scale-95"
+            aria-label="Open settings"
+          >
+            <i className="ri-settings-3-fill text-[2.8vh] relative z-10" />
+          </button>
+        </div>
+
+        {/* Full-screen Settings Page */}
+        <SettingsPage
+          open={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          onResetAllSettings={handleResetAllSettings}
+          // UI Theme & Base Font
+          uiTheme={uiTheme}
+          onUiThemeChange={handleUiThemeChange}
+          baseFont={baseFont}
+          onBaseFontChange={setBaseFont}
+          baseFontSize={baseFontSize}
+          onBaseFontSizeChange={setBaseFontSize}
+          // Wallpaper
+          wallpaper={wallpaper}
+          onWallpaperPick={handleWallpaperChange}
+          onWallpaperReset={handleWallpaperResetChange}
+          // Theme
+          themeColor={themeColor}
+          themeColorsMap={themeColorsMap}
+          onThemeChange={handleThemeColorChange}
+          themeTextColorIndex={themeTextColorIndex}
+          onThemeTextColorChange={setThemeTextColorIndex}
+          // Shortcuts
+          shortcuts={shortcuts}
+          onShortcutsChange={setShortcuts}
+          onShortcutUpdate={updateShortcut}
+          onShortcutRemove={removeShortcut}
+          onShortcutAdd={addShortcut}
+          onShortcutIconPick={handleShortcutIconPick}
+          // Taskbar
+          showTaskbar={showTaskbar}
+          onShowTaskbarChange={setShowTaskbar}
+          // Focus Timer
+          showTimer={showTimer}
+          onShowTimerChange={setShowTimer}
+          focusNotifEnabled={focusNotifEnabled}
+          onFocusNotifChange={setFocusNotifEnabled}
+          focusEndRingtone={focusEndRingtone}
+          onFocusEndRingtoneChange={setFocusEndRingtone}
+          restEndRingtone={restEndRingtone}
+          onRestEndRingtoneChange={setRestEndRingtone}
+          // Water Reminder
+          showWaterReminder={showWaterReminder}
+          onShowWaterReminderChange={setShowWaterReminder}
+          waterGoalMl={waterGoalMl}
+          onWaterGoalChange={setWaterGoalMl}
+          waterNotifEnabled={waterNotifEnabled}
+          onWaterNotifChange={setWaterNotifEnabled}
+          waterRingtone={waterRingtone}
+          onWaterRingtoneChange={setWaterRingtone}
+          // Song Player
+          showSongPlayer={showSongPlayer}
+          onShowSongPlayerChange={setShowSongPlayer}
+          songPlaylistUrl={songPlaylistUrl}
+          onSongPlaylistUrlChange={setSongPlaylistUrl}
+          songAutoPlay={songAutoPlay}
+          onSongAutoPlayChange={setSongAutoPlay}
+          songCustomVideo={songCustomVideo}
+          onSongCustomVideoChange={setSongCustomVideo}
+          lofiStations={lofiStations}
+          onLofiStationsChange={setLofiStations}
+          // Notepad
+          showTodo={showTodo}
+          onShowTodoChange={setShowTodo}
+          // Important Tabs
+          showImportantTabs={showImportantTabs}
+          onShowImportantTabsChange={setShowImportantTabs}
+          importantTabsConfig={importantTabsConfig}
+          onImportantTabsConfigChange={setImportantTabsConfig}
+          // TimeBoxing
+          showTimeBoxing={showTimeBoxing}
+          onShowTimeBoxingChange={setShowTimeBoxing}
+          timeBoxingGroups={timeBoxingGroups}
+          onTimeBoxingGroupsChange={setTimeBoxingGroups}
+          // Streak
+          showStreakGrid={showStreakGrid}
+          onShowStreakGridChange={setShowStreakGrid}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default App;

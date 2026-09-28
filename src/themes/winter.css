@@ -1,0 +1,964 @@
+/* Winter Arc visual identity: cold, quiet, disciplined, and deliberately restrained. */
+[data-theme="winter"] {
+  --winter-bg: #030508;
+  --winter-panel: #08111A;
+  --winter-panel-raised: #0B1620;
+  --winter-text: #F2F7FA;
+  --winter-muted: #7E909D;
+  --winter-ice: #8FD8FF;
+  --winter-red: #C4212F;
+  --winter-edge: var(--theme, #C4212F);
+  --winter-red-soft: rgba(196, 33, 47, 0.14);
+  --winter-surface: #141414;
+  --winter-surface-raised: #1B1B1B;
+  --winter-border: rgba(255, 255, 255, 0.1);
+  --theme-text: #F2F7FA;
+}
+
+/* Discipline identity: monochrome surfaces with a restrained crimson action accent. */
+[data-theme="winter"] {
+  --streak-level-0: rgba(255, 255, 255, 0.045);
+  --streak-level-1: #303030;
+  --streak-level-2: #565656;
+  --streak-level-3: #8A8A8A;
+  --streak-level-4: #D7D7D7;
+}
+
+[data-theme="winter"] .theme-bg {
+  background: var(--winter-bg) !important;
+  isolation: isolate;
+}
+
+[data-theme="winter"] .theme-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(3, 5, 8, 0.58) 0%, rgba(3, 5, 8, 0.32) 48%, rgba(3, 5, 8, 0.08) 100%),
+    linear-gradient(180deg, rgba(3, 5, 8, 0.5), rgba(7, 12, 18, 0.72)),
+    radial-gradient(ellipse at 52% 42%, rgba(143, 216, 255, 0.055), transparent 58%);
+}
+
+[data-theme="winter"] .theme-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 38%, rgba(1, 3, 6, 0.68) 100%);
+}
+
+[data-theme="winter"] .theme-bg > .h-full {
+  position: relative;
+  z-index: 2;
+}
+
+[data-theme="winter"] .theme-wallpaper {
+  object-position: center center;
+  filter: brightness(0.64) saturate(0.68) contrast(1.08);
+}
+
+[data-theme="winter"] .theme-bg {
+  background: #0A0A0A !important;
+}
+
+[data-theme="winter"] .theme-bg::before {
+  background:
+    linear-gradient(90deg, rgba(3, 3, 3, 0.78) 0%, rgba(8, 8, 8, 0.52) 48%, rgba(8, 8, 8, 0.24) 100%),
+    linear-gradient(180deg, rgba(3, 3, 3, 0.62), rgba(7, 7, 7, 0.78));
+}
+
+[data-theme="winter"] .theme-bg::after {
+  background: radial-gradient(ellipse at center, transparent 34%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+[data-theme="winter"] .figma-glass-card,
+[data-theme="winter"] .figma-glass-static,
+[data-theme="winter"] .figma-glass-clean,
+[data-theme="winter"] .figma-glass-border-slide,
+[data-theme="winter"] .card-glass-bg {
+  background: rgba(20, 20, 20, 0.9) !important;
+  border: 1px solid var(--winter-border) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055), 0 16px 34px rgba(0, 0, 0, 0.62) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(92%);
+  backdrop-filter: blur(10px) saturate(92%);
+}
+
+[data-theme="winter"] .figma-glass-card::before,
+[data-theme="winter"] .figma-glass-static::before,
+[data-theme="winter"] .card-glass-bg::before {
+  opacity: 0.025;
+}
+
+/* The active routine remains selected without becoming a pale-blue focal point. */
+[data-theme="winter"] .timebox-task-card {
+  background-color: rgba(8, 17, 26, 0.86) !important;
+  border-color: rgba(180, 220, 236, 0.16) !important;
+  color: #F4FBFF !important;
+  box-shadow: inset 0 1px 0 rgba(242, 247, 250, 0.08), 0 12px 26px rgba(1, 3, 6, 0.5) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(102%);
+  backdrop-filter: blur(12px) saturate(102%);
+}
+
+[data-theme="winter"] .timebox-task-card[style*="var(--theme-1"] {
+  background-color: #1B1B1B !important;
+  border-color: rgba(196, 33, 47, 0.6) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), 0 14px 30px rgba(0, 0, 0, 0.58) !important;
+}
+
+[data-theme="winter"] .timebox-task-card[style*="var(--theme-1"] * {
+  color: #F5F5F3 !important;
+}
+
+[data-theme="winter"] .timebox-task-card:hover {
+  border-color: rgba(196, 33, 47, 0.38) !important;
+}
+
+/* Make frequently used secondary controls slate-first while retaining icy accents. */
+[data-theme="winter"] button.bg-white\/5,
+[data-theme="winter"] button.bg-white\/10,
+[data-theme="winter"] button.bg-white\/15,
+[data-theme="winter"] button.bg-black\/40,
+[data-theme="winter"] button.bg-black\/50 {
+  background-color: rgba(8, 20, 32, 0.68) !important;
+}
+
+[data-theme="winter"] button.bg-\[color\:var\(--theme\)\]\/20,
+[data-theme="winter"] button.bg-\[color\:var\(--theme\)\]\/25,
+[data-theme="winter"] button.bg-\[color\:var\(--theme\)\]\/30 {
+  background-color: rgba(18, 42, 58, 0.72) !important;
+}
+
+[data-theme="winter"] .figma-glass-card:hover,
+[data-theme="winter"] .figma-glass-border-slide:hover,
+[data-theme="winter"] button:hover {
+  border-color: rgba(210, 240, 250, 0.25) !important;
+}
+
+[data-theme="winter"] .figma-glass-clean {
+  box-shadow: 0 10px 26px rgba(1, 7, 15, 0.32) !important;
+}
+
+[data-theme="winter"] .figma-glass-border-slide::after {
+  background: rgba(210, 240, 250, 0.2);
+}
+
+[data-theme="winter"] input,
+[data-theme="winter"] textarea,
+[data-theme="winter"] select {
+  background-color: rgba(7, 18, 30, 0.62) !important;
+  border-color: rgba(210, 240, 250, 0.16) !important;
+  color: #F4FBFF !important;
+}
+
+[data-theme="winter"] input::placeholder,
+[data-theme="winter"] textarea::placeholder {
+  color: rgba(190, 216, 230, 0.52) !important;
+}
+
+[data-theme="winter"] input:focus,
+[data-theme="winter"] textarea:focus,
+[data-theme="winter"] select:focus,
+[data-theme="winter"] button:focus-visible,
+[data-theme="winter"] a:focus-visible {
+  outline: 2px solid rgba(143, 211, 244, 0.72) !important;
+  outline-offset: 2px;
+  border-color: rgba(210, 240, 250, 0.34) !important;
+}
+
+[data-theme="winter"] ::selection {
+  color: #F4FBFF;
+  background: rgba(78, 168, 216, 0.45);
+}
+
+[data-theme="winter"] ::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+[data-theme="winter"] ::-webkit-scrollbar-track {
+  background: rgba(3, 9, 16, 0.72);
+}
+
+[data-theme="winter"] ::-webkit-scrollbar-thumb {
+  background: rgba(143, 172, 190, 0.34);
+  border: 2px solid rgba(3, 9, 16, 0.72);
+  border-radius: 999px;
+}
+
+[data-theme="winter"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(143, 211, 244, 0.52);
+}
+
+/* Widget identity: quiet by default, with emphasis reserved for active work. */
+[data-theme="winter"] .clock-widget {
+  color: #F4FBFF;
+}
+
+[data-theme="winter"] .clock-widget [class*="text-lg"],
+[data-theme="winter"] .clock-widget [class*="text-xl"] {
+  color: rgba(190, 216, 230, 0.78) !important;
+}
+
+[data-theme="winter"] .winter-focus-microcopy {
+  color: rgba(143, 216, 255, 0.68);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  margin-left: 0.15rem;
+}
+
+[data-theme="winter"] .winter-todo-empty {
+  margin: 0.2rem 0 0.35rem;
+  color: rgba(126, 144, 157, 0.78);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+[data-theme="winter"] .winter-reset-button {
+  background-color: rgba(8, 20, 32, 0.72) !important;
+  border-color: rgba(143, 216, 255, 0.2) !important;
+  color: rgba(242, 247, 250, 0.88) !important;
+}
+
+[data-theme="winter"] .winter-reset-button:hover {
+  background-color: rgba(18, 42, 58, 0.88) !important;
+  border-color: rgba(143, 216, 255, 0.38) !important;
+}
+
+[data-theme="winter"] .winter-reset-button i {
+  color: var(--winter-ice, #8FD8FF) !important;
+}
+
+[data-theme="winter"] .todo-widget > div:first-child span,
+[data-theme="winter"] .important-tabs-widget > div:first-child span,
+[data-theme="winter"] .water-widget > div:first-child span,
+[data-theme="winter"] .timeboxing-widget > div:first-child span,
+[data-theme="winter"] .streak-widget > div:first-child span {
+  color: rgba(210, 226, 235, 0.78) !important;
+  font-weight: 700;
+}
+
+[data-theme="winter"] .focus-widget {
+  background: rgba(5, 11, 17, 0.9) !important;
+  border-color: rgba(143, 216, 255, 0.28) !important;
+  box-shadow: inset 0 1px 0 rgba(242, 247, 250, 0.1), 0 16px 34px rgba(1, 3, 6, 0.7) !important;
+}
+
+[data-theme="winter"] .focus-widget .font-heathergreen {
+  background-image: linear-gradient(180deg, #F2F7FA 12%, #8FD8FF 100%) !important;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+}
+
+[data-theme="winter"] .focus-widget > div:first-child {
+  color: var(--winter-muted) !important;
+}
+
+[data-theme="winter"] .focus-widget button.bg-white\/25 {
+  background-color: rgba(143, 211, 244, 0.28) !important;
+  color: #F4FBFF !important;
+}
+
+[data-theme="winter"] .focus-widget > div:nth-child(3) button {
+  border: 1px solid rgba(210, 240, 250, 0.16);
+  background-color: rgba(12, 31, 47, 0.78) !important;
+}
+
+[data-theme="winter"] .focus-widget > div:nth-child(3) button:hover {
+  background-color: rgba(25, 55, 74, 0.88) !important;
+  border-color: rgba(210, 240, 250, 0.3);
+}
+
+[data-theme="winter"] .todo-widget .group\/task:hover,
+[data-theme="winter"] .important-tabs-widget .group:hover {
+  background: rgba(143, 211, 244, 0.08);
+  border-radius: 8px;
+}
+
+[data-theme="winter"] .todo-widget input {
+  border: 0 !important;
+  background: transparent !important;
+}
+
+[data-theme="winter"] .important-tabs-widget .group:hover button {
+  color: #F4FBFF !important;
+  border-color: rgba(210, 240, 250, 0.3) !important;
+}
+
+[data-theme="winter"] .water-widget .border-white\/80 {
+  border-color: rgba(210, 240, 250, 0.62) !important;
+}
+
+[data-theme="winter"] .water-widget button {
+  border: 1px solid rgba(210, 240, 250, 0.14);
+  background-color: rgba(8, 20, 32, 0.72) !important;
+}
+
+[data-theme="winter"] .water-widget button:hover {
+  background-color: rgba(20, 46, 63, 0.84) !important;
+  border-color: rgba(210, 240, 250, 0.28);
+}
+
+[data-theme="winter"] .taskbar-widget .figma-glass-card {
+  background: rgba(6, 17, 28, 0.72) !important;
+  border-color: rgba(210, 240, 250, 0.16) !important;
+}
+
+[data-theme="winter"] .taskbar-widget .figma-glass-card:hover {
+  background: rgba(18, 40, 56, 0.84) !important;
+}
+
+[data-theme="winter"] .taskbar-widget i,
+[data-theme="winter"] .taskbar-widget img {
+  opacity: 0.82;
+}
+
+[data-theme="winter"] .taskbar-widget .figma-glass-card:hover i,
+[data-theme="winter"] .taskbar-widget .figma-glass-card:hover img {
+  opacity: 1;
+}
+
+[data-theme="winter"] .streak-widget {
+  background: rgba(7, 13, 20, 0.88) !important;
+}
+
+[data-theme="winter"] .streak-widget [class*="text-\[color\:var\(--theme\)\]"] {
+  color: var(--winter-ice) !important;
+}
+
+/* Final discipline accents (kept deliberately sparse). */
+[data-theme="winter"] .clock-widget h1,
+[data-theme="winter"] .focus-widget .font-heathergreen {
+  background-image: linear-gradient(180deg, #F5F5F3 12%, #C4212F 100%) !important;
+}
+
+[data-theme="winter"] .focus-widget button.bg-white\/25 {
+  background-color: var(--winter-red-soft) !important;
+  border: 1px solid rgba(196, 33, 47, 0.45);
+}
+
+[data-theme="winter"] .focus-widget > div:nth-child(3) button,
+[data-theme="winter"] .water-widget button,
+[data-theme="winter"] .taskbar-widget .figma-glass-card {
+  background-color: #0F0F0F !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+[data-theme="winter"] .focus-widget > div:nth-child(3) button:hover,
+[data-theme="winter"] .water-widget button:hover,
+[data-theme="winter"] .taskbar-widget .figma-glass-card:hover {
+  background-color: #1B1B1B !important;
+  border-color: rgba(196, 33, 47, 0.5) !important;
+}
+
+[data-theme="winter"] .timebox-task-card[style*="var(--theme-1"] .h-full {
+  background-color: #C4212F !important;
+}
+
+[data-theme="winter"] .todo-widget .group\/task:hover,
+[data-theme="winter"] .important-tabs-widget .group:hover {
+  background: rgba(255, 255, 255, 0.045) !important;
+  border-left: 2px solid rgba(196, 33, 47, 0.62);
+  padding-left: 0.35rem;
+}
+
+[data-theme="winter"] .winter-focus-microcopy {
+  color: rgba(196, 33, 47, 0.9) !important;
+}
+
+/* Phase 3 rework: an editorial, tactical system rather than generic glass cards. */
+[data-theme="winter"] .figma-glass-card,
+[data-theme="winter"] .figma-glass-static,
+[data-theme="winter"] .figma-glass-clean,
+[data-theme="winter"] .figma-glass-border-slide,
+[data-theme="winter"] .card-glass-bg {
+  border-radius: 16px !important;
+  background: #141414 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-top-color: rgba(255, 255, 255, 0.16) !important;
+  border-right-color: rgba(255, 255, 255, 0.07) !important;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.58) !important;
+  -webkit-backdrop-filter: blur(6px) saturate(88%);
+  backdrop-filter: blur(6px) saturate(88%);
+}
+
+[data-theme="winter"] .figma-glass-card:hover,
+[data-theme="winter"] .figma-glass-border-slide:hover,
+[data-theme="winter"] .figma-glass-static:hover {
+  border-top-color: rgba(255, 255, 255, 0.24) !important;
+  border-left-color: rgba(196, 33, 47, 0.32) !important;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.64) !important;
+}
+
+[data-theme="winter"] button {
+  border-radius: 8px;
+  letter-spacing: 0.01em;
+}
+
+[data-theme="winter"] button:not(:disabled):hover {
+  filter: brightness(1.12);
+}
+
+[data-theme="winter"] .focus-widget {
+  border-radius: 14px !important;
+  border-left: 2px solid rgba(196, 33, 47, 0.75) !important;
+  background: #101010 !important;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.72) !important;
+}
+
+[data-theme="winter"] .focus-widget > div:first-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.45rem;
+}
+
+[data-theme="winter"] .focus-widget > div:nth-child(3) button {
+  border-radius: 6px !important;
+  background: #1B1B1B !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+[data-theme="winter"] .focus-widget > div:nth-child(3) button:first-child:hover {
+  background: var(--winter-red-soft) !important;
+  border-color: rgba(196, 33, 47, 0.58) !important;
+}
+
+[data-theme="winter"] .timeboxing-widget,
+[data-theme="winter"] .todo-widget,
+[data-theme="winter"] .important-tabs-widget,
+[data-theme="winter"] .water-widget,
+[data-theme="winter"] .streak-widget {
+  border-radius: 14px !important;
+}
+
+[data-theme="winter"] .timeboxing-widget > div:first-child,
+[data-theme="winter"] .todo-widget > div:first-child,
+[data-theme="winter"] .important-tabs-widget > div:first-child,
+[data-theme="winter"] .water-widget > div:first-child,
+[data-theme="winter"] .streak-widget > div:first-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.55rem;
+}
+
+[data-theme="winter"] .timebox-task-card {
+  border-radius: 9px !important;
+  background: #101010 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="winter"] .timebox-task-card[style*="var(--theme-1"] {
+  background: #1B1B1B !important;
+  border-left: 3px solid var(--winter-red) !important;
+  border-top-color: rgba(255, 255, 255, 0.22) !important;
+  border-right-color: rgba(255, 255, 255, 0.09) !important;
+}
+
+[data-theme="winter"] .todo-widget .group\/task {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+  padding: 0.28rem 0;
+}
+
+[data-theme="winter"] .todo-widget .ri-checkbox-circle-fill {
+  color: var(--winter-red) !important;
+}
+
+[data-theme="winter"] .todo-widget .ri-checkbox-blank-circle-line {
+  color: rgba(255, 255, 255, 0.42) !important;
+}
+
+[data-theme="winter"] .important-tabs-widget .group {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+  padding: 0.28rem 0;
+}
+
+[data-theme="winter"] .water-widget .border-white\/80 {
+  border-width: 2px !important;
+  border-color: rgba(196, 33, 47, 0.64) !important;
+}
+
+[data-theme="winter"] .taskbar-widget .figma-glass-card {
+  border-radius: 10px !important;
+  background: #0F0F0F !important;
+}
+
+[data-theme="winter"] .taskbar-widget .figma-glass-card.rounded-full {
+  border-radius: 999px !important;
+}
+
+[data-theme="winter"] .clock-widget h1 {
+  letter-spacing: -0.04em;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.68);
+}
+
+/* Shared Winter Arc corner language: four restrained red edge traces, not a red border. */
+[data-theme="winter"] .figma-glass-card::after,
+[data-theme="winter"] .figma-glass-static::after,
+[data-theme="winter"] .figma-glass-clean::after,
+[data-theme="winter"] .figma-glass-border-slide::after,
+[data-theme="winter"] .card-glass-bg::after,
+[data-theme="winter"] .timebox-task-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(var(--winter-red), var(--winter-red)) left top / 22px 1px no-repeat,
+    linear-gradient(var(--winter-red), var(--winter-red)) left top / 1px 22px no-repeat,
+    linear-gradient(var(--winter-red), var(--winter-red)) right bottom / 22px 1px no-repeat,
+    linear-gradient(var(--winter-red), var(--winter-red)) right bottom / 1px 22px no-repeat;
+  opacity: 0.42;
+  transition: opacity 180ms ease;
+}
+
+[data-theme="winter"] .figma-glass-card:hover::after,
+[data-theme="winter"] .figma-glass-static:hover::after,
+[data-theme="winter"] .figma-glass-clean:hover::after,
+[data-theme="winter"] .figma-glass-border-slide:hover::after,
+[data-theme="winter"] .card-glass-bg:hover::after,
+[data-theme="winter"] .timebox-task-card:hover::after {
+  opacity: 0.72;
+}
+
+[data-theme="winter"] .figma-glass-border-slide::after {
+  top: 0 !important;
+  height: auto !important;
+  background:
+    linear-gradient(var(--winter-red), var(--winter-red)) left top / 22px 1px no-repeat,
+    linear-gradient(var(--winter-red), var(--winter-red)) left top / 1px 22px no-repeat,
+    linear-gradient(var(--winter-red), var(--winter-red)) right bottom / 22px 1px no-repeat,
+    linear-gradient(var(--winter-red), var(--winter-red)) right bottom / 1px 22px no-repeat;
+  transition: opacity 180ms ease !important;
+}
+
+[data-theme="winter"] .timebox-task-card[style*="var(--theme-1"]::after {
+  opacity: 0.82;
+}
+
+/* Side-edge refinement: the accent enters from the perimeter instead of forming a box. */
+[data-theme="winter"] .figma-glass-card::after,
+[data-theme="winter"] .figma-glass-static::after,
+[data-theme="winter"] .figma-glass-clean::after,
+[data-theme="winter"] .figma-glass-border-slide::after,
+[data-theme="winter"] .card-glass-bg::after,
+[data-theme="winter"] .timebox-task-card::after {
+  background:
+    linear-gradient(var(--winter-red), var(--winter-red)) left top / 28px 1px no-repeat,
+    linear-gradient(var(--winter-red), var(--winter-red)) left top / 1px 38px no-repeat,
+    linear-gradient(var(--winter-red), var(--winter-red)) right bottom / 28px 1px no-repeat,
+    linear-gradient(var(--winter-red), var(--winter-red)) right bottom / 1px 38px no-repeat;
+  opacity: 0.5;
+}
+
+[data-theme="winter"] .figma-glass-card:hover::after,
+[data-theme="winter"] .figma-glass-static:hover::after,
+[data-theme="winter"] .figma-glass-clean:hover::after,
+[data-theme="winter"] .figma-glass-border-slide:hover::after,
+[data-theme="winter"] .card-glass-bg:hover::after,
+[data-theme="winter"] .timebox-task-card:hover::after {
+  opacity: 0.82;
+}
+
+[data-theme="winter"] .timebox-task-card[style*="var(--theme-1"]::after {
+  opacity: 0.95;
+}
+
+/* Compact edge traces for controls; rounded and circular geometry is preserved. */
+[data-theme="winter"] button:not(.timebox-subtask-check)::after,
+[data-theme="winter"] [role="button"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(var(--winter-red), var(--winter-red)) left top / 12px 1px no-repeat,
+    linear-gradient(var(--winter-red), var(--winter-red)) left top / 1px 17px no-repeat,
+    linear-gradient(var(--winter-red), var(--winter-red)) right bottom / 12px 1px no-repeat,
+    linear-gradient(var(--winter-red), var(--winter-red)) right bottom / 1px 17px no-repeat;
+  opacity: 0.28;
+  transition: opacity 180ms ease;
+}
+
+[data-theme="winter"] button:not(.timebox-subtask-check),
+[data-theme="winter"] [role="button"] {
+  position: relative;
+}
+
+[data-theme="winter"] button:not(.timebox-subtask-check):hover::after,
+[data-theme="winter"] button:not(.timebox-subtask-check):focus-visible::after,
+[data-theme="winter"] [role="button"]:hover::after {
+  opacity: 0.68;
+}
+
+[data-theme="winter"] button:not(.timebox-subtask-check):active::after,
+[data-theme="winter"] button[aria-pressed="true"]::after,
+[data-theme="winter"] button[aria-selected="true"]::after {
+  opacity: 0.9;
+}
+
+/* Final left-edge-only accent: remove all top, right, and bottom traces. */
+[data-theme="winter"] .figma-glass-card::after,
+[data-theme="winter"] .figma-glass-static::after,
+[data-theme="winter"] .figma-glass-clean::after,
+[data-theme="winter"] .figma-glass-border-slide::after,
+[data-theme="winter"] .card-glass-bg::after,
+[data-theme="winter"] .timebox-task-card::after {
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 2px !important;
+  height: 100% !important;
+  border-radius: inherit;
+  background: var(--winter-red) !important;
+  opacity: 0.38;
+  transition: opacity 180ms ease;
+}
+
+[data-theme="winter"] .figma-glass-card:hover::after,
+[data-theme="winter"] .figma-glass-static:hover::after,
+[data-theme="winter"] .figma-glass-clean:hover::after,
+[data-theme="winter"] .figma-glass-border-slide:hover::after,
+[data-theme="winter"] .card-glass-bg:hover::after,
+[data-theme="winter"] .timebox-task-card:hover::after {
+  opacity: 0.68;
+}
+
+[data-theme="winter"] .timebox-task-card[style*="var(--theme-1"]::after {
+  opacity: 0.9;
+}
+
+[data-theme="winter"] button:not(.timebox-subtask-check)::after,
+[data-theme="winter"] [role="button"]::after {
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 1px !important;
+  height: 100% !important;
+  border-radius: inherit;
+  background: var(--winter-red) !important;
+  opacity: 0.24;
+}
+
+[data-theme="winter"] button:not(.timebox-subtask-check):hover::after,
+[data-theme="winter"] button:not(.timebox-subtask-check):focus-visible::after,
+[data-theme="winter"] [role="button"]:hover::after {
+  opacity: 0.62;
+}
+
+[data-theme="winter"] button:not(.timebox-subtask-check):active::after,
+[data-theme="winter"] button[aria-pressed="true"]::after,
+[data-theme="winter"] button[aria-selected="true"]::after {
+  opacity: 0.86;
+}
+
+/* Dimension-aware left edge: a real clipped side stroke, not a fixed overlay strip. */
+[data-theme="winter"] .figma-glass-card::after,
+[data-theme="winter"] .figma-glass-static::after,
+[data-theme="winter"] .figma-glass-clean::after,
+[data-theme="winter"] .figma-glass-border-slide::after,
+[data-theme="winter"] .card-glass-bg::after,
+[data-theme="winter"] .timebox-task-card::after {
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  border: 0 !important;
+  border-left: 2px solid color-mix(in srgb, var(--winter-edge) 50%, transparent) !important;
+  border-radius: inherit !important;
+  background: transparent !important;
+  opacity: 1;
+  transition: border-left-color 180ms ease;
+}
+
+[data-theme="winter"] .figma-glass-card:hover::after,
+[data-theme="winter"] .figma-glass-static:hover::after,
+[data-theme="winter"] .figma-glass-clean:hover::after,
+[data-theme="winter"] .figma-glass-border-slide:hover::after,
+[data-theme="winter"] .card-glass-bg:hover::after,
+[data-theme="winter"] .timebox-task-card:hover::after {
+  border-left-color: color-mix(in srgb, var(--winter-edge) 78%, transparent) !important;
+}
+
+[data-theme="winter"] .timebox-task-card[style*="var(--theme-1"]::after {
+  border-left-color: color-mix(in srgb, var(--winter-edge) 95%, transparent) !important;
+}
+
+/* Controls use the same geometry-aware stroke at half the widget thickness. */
+[data-theme="winter"] button:not(.timebox-subtask-check)::after,
+[data-theme="winter"] [role="button"]::after {
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  border: 0 !important;
+  border-left: 1px solid color-mix(in srgb, var(--winter-edge) 30%, transparent) !important;
+  border-radius: inherit !important;
+  background: transparent !important;
+  opacity: 1;
+  transition: border-left-color 180ms ease;
+}
+
+[data-theme="winter"] button:not(.timebox-subtask-check):hover::after,
+[data-theme="winter"] button:not(.timebox-subtask-check):focus-visible::after,
+[data-theme="winter"] [role="button"]:hover::after {
+  border-left-color: color-mix(in srgb, var(--winter-edge) 66%, transparent) !important;
+}
+
+[data-theme="winter"] button:not(.timebox-subtask-check):active::after,
+[data-theme="winter"] button[aria-pressed="true"]::after,
+[data-theme="winter"] button[aria-selected="true"]::after {
+  border-left-color: color-mix(in srgb, var(--winter-edge) 88%, transparent) !important;
+}
+
+/* Canonical implementation: embed the accent in the physical left border. */
+[data-theme="winter"] .figma-glass-card,
+[data-theme="winter"] .figma-glass-static,
+[data-theme="winter"] .figma-glass-clean,
+[data-theme="winter"] .figma-glass-border-slide,
+[data-theme="winter"] .card-glass-bg,
+[data-theme="winter"] .timebox-task-card,
+[data-theme="winter"] .grid-widget {
+  border-left: 2px solid color-mix(in srgb, var(--winter-edge) 50%, transparent) !important;
+}
+
+[data-theme="winter"] .figma-glass-card:hover,
+[data-theme="winter"] .figma-glass-static:hover,
+[data-theme="winter"] .figma-glass-clean:hover,
+[data-theme="winter"] .figma-glass-border-slide:hover,
+[data-theme="winter"] .card-glass-bg:hover,
+[data-theme="winter"] .timebox-task-card:hover,
+[data-theme="winter"] .grid-widget:hover {
+  border-left-color: color-mix(in srgb, var(--winter-edge) 78%, transparent) !important;
+}
+
+[data-theme="winter"] .timebox-task-card[style*="var(--theme-1"] {
+  border-left-color: color-mix(in srgb, var(--winter-edge) 95%, transparent) !important;
+}
+
+[data-theme="winter"] button:not(.timebox-subtask-check),
+[data-theme="winter"] [role="button"] {
+  border-left: 1px solid color-mix(in srgb, var(--winter-edge) 30%, transparent) !important;
+}
+
+[data-theme="winter"] button:not(.timebox-subtask-check):hover,
+[data-theme="winter"] button:not(.timebox-subtask-check):focus-visible,
+[data-theme="winter"] [role="button"]:hover {
+  border-left-color: color-mix(in srgb, var(--winter-edge) 66%, transparent) !important;
+}
+
+[data-theme="winter"] button:not(.timebox-subtask-check):active,
+[data-theme="winter"] button[aria-pressed="true"],
+[data-theme="winter"] button[aria-selected="true"] {
+  border-left-color: color-mix(in srgb, var(--winter-edge) 88%, transparent) !important;
+}
+
+/* Prevent any earlier pseudo-element variant from drawing a second edge. */
+[data-theme="winter"] .figma-glass-card::after,
+[data-theme="winter"] .figma-glass-static::after,
+[data-theme="winter"] .figma-glass-clean::after,
+[data-theme="winter"] .figma-glass-border-slide::after,
+[data-theme="winter"] .card-glass-bg::after,
+[data-theme="winter"] .timebox-task-card::after,
+[data-theme="winter"] button:not(.timebox-subtask-check)::after,
+[data-theme="winter"] [role="button"]::after {
+  display: none !important;
+}
+
+/* Winter Arc semantic controls: keep every theme-dependent surface on the
+   charcoal system while deriving accents from the user's selected palette. */
+[data-theme="winter"] {
+  --winter-ui-surface: #151515;
+  --winter-ui-surface-hover: #1d1d1d;
+  --winter-ui-surface-active: color-mix(in srgb, var(--winter-edge) 18%, #151515);
+  --winter-ui-border: #303030;
+  --winter-ui-text: #f4f4f4;
+  --winter-ui-muted: #a3a3a3;
+  --winter-ui-focus: color-mix(in srgb, var(--winter-edge) 72%, transparent);
+}
+
+[data-theme="winter"] button,
+[data-theme="winter"] [role="button"] {
+  border-color: var(--winter-ui-border) !important;
+  color: var(--winter-ui-text) !important;
+}
+
+[data-theme="winter"] button[style*="var(--theme-4"],
+[data-theme="winter"] [role="button"][style*="var(--theme-4"] {
+  background-color: var(--winter-ui-surface) !important;
+}
+
+[data-theme="winter"] button[style*="var(--theme-4"]:hover:not(:disabled),
+[data-theme="winter"] [role="button"][style*="var(--theme-4"]:hover {
+  background-color: var(--winter-ui-surface-hover) !important;
+}
+
+[data-theme="winter"] button:focus-visible,
+[data-theme="winter"] [role="button"]:focus-visible,
+[data-theme="winter"] input:focus,
+[data-theme="winter"] textarea:focus,
+[data-theme="winter"] select:focus {
+  outline: 1px solid var(--winter-ui-focus) !important;
+  outline-offset: 1px;
+}
+
+[data-theme="winter"] input,
+[data-theme="winter"] textarea,
+[data-theme="winter"] select {
+  background-color: #111111 !important;
+  border-color: var(--winter-ui-border) !important;
+  color: var(--winter-ui-text) !important;
+}
+
+[data-theme="winter"] input::placeholder,
+[data-theme="winter"] textarea::placeholder {
+  color: var(--winter-ui-muted) !important;
+}
+
+/* Focus, timer and water controls retain their dark surfaces even when
+   components provide inline theme colors. */
+[data-theme="winter"] .focus-widget button,
+[data-theme="winter"] .water-widget button,
+[data-theme="winter"] .timeboxing-widget button {
+  background-color: var(--winter-ui-surface) !important;
+}
+
+[data-theme="winter"] .focus-widget button[aria-pressed="true"],
+[data-theme="winter"] .focus-widget button.active,
+[data-theme="winter"] .timeboxing-widget button[aria-pressed="true"] {
+  background-color: var(--winter-ui-surface-active) !important;
+}
+
+[data-theme="winter"] .water-progress-ring {
+  border-color: color-mix(in srgb, var(--winter-edge) 62%, #303030) !important;
+  background-color: #111111 !important;
+}
+
+[data-theme="winter"] .water-progress-fill,
+[data-theme="winter"] .water-progress-wave {
+  background-color: var(--winter-edge) !important;
+  fill: var(--winter-edge) !important;
+}
+
+/* Song Player visualizer/station artwork uses the Winter charcoal + accent
+   language instead of its default multicolor gradient and bars. */
+[data-theme="winter"] .song-widget [class*="bg-gradient-to-br"] {
+  background: #141414 !important;
+  background-image: none !important;
+}
+
+[data-theme="winter"] .song-widget [class*="bg-purple-300"],
+[data-theme="winter"] .song-widget [class*="bg-indigo-300"],
+[data-theme="winter"] .song-widget [class*="bg-pink-300"],
+[data-theme="winter"] .song-widget [class*="bg-cyan-300"] {
+  background-color: color-mix(in srgb, var(--winter-edge) 72%, #202020) !important;
+}
+
+[data-theme="winter"] .song-widget [style*="var(--theme-4"] {
+  background-color: var(--winter-ui-surface) !important;
+}
+
+/* Settings uses Tailwind arbitrary-value classes for palette-driven actions.
+   Re-apply that palette after the Winter slate defaults so changing the
+   accent immediately updates tabs, segmented controls, and action buttons. */
+[data-theme="winter"] button[class*="var(--theme)"] {
+  background-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 28%, #151515) !important;
+}
+
+[data-theme="winter"] button[class*="var(--theme)"]:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 42%, #151515) !important;
+}
+
+[data-theme="winter"] button[class*="var(--theme)"][aria-pressed="true"],
+[data-theme="winter"] button[class*="var(--theme)"][aria-selected="true"] {
+  background-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 56%, #151515) !important;
+}
+
+/* Settings-only semantic accents also follow the active palette (including
+   reset/destructive affordances and their icon states). */
+[data-theme="winter"] .winter-settings-page .winter-reset-button {
+  background-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 16%, #151515) !important;
+  border-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 44%, #303030) !important;
+}
+
+[data-theme="winter"] .winter-settings-page .winter-reset-button:hover {
+  background-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 28%, #151515) !important;
+  border-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 68%, #303030) !important;
+}
+
+[data-theme="winter"] .winter-settings-page .winter-reset-button i,
+[data-theme="winter"] .winter-settings-page [class*="text-red-400"] {
+  color: var(--theme, var(--winter-edge)) !important;
+}
+
+[data-theme="winter"] .winter-settings-page button[class*="hover:bg-red-500"]:hover {
+  background-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 24%, #151515) !important;
+}
+
+[data-theme="winter"] .winter-settings-page button {
+  border-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 24%, #303030) !important;
+}
+
+[data-theme="winter"] .winter-settings-page button:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 52%, #303030) !important;
+}
+
+[data-theme="winter"] .winter-settings-page input,
+[data-theme="winter"] .winter-settings-page textarea,
+[data-theme="winter"] .winter-settings-page select {
+  border-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 22%, #303030) !important;
+}
+
+/* Accent-aware widget outline and hover treatment. The left edge remains the
+   defining stroke; the rest of the outline only receives a restrained tint. */
+[data-theme="winter"] .figma-glass-card,
+[data-theme="winter"] .figma-glass-static,
+[data-theme="winter"] .figma-glass-clean,
+[data-theme="winter"] .figma-glass-border-slide,
+[data-theme="winter"] .card-glass-bg,
+[data-theme="winter"] .timebox-task-card {
+  border-top-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 18%, #303030) !important;
+  border-right-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 18%, #303030) !important;
+  border-bottom-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 18%, #303030) !important;
+}
+
+[data-theme="winter"] .figma-glass-card:hover,
+[data-theme="winter"] .figma-glass-static:hover,
+[data-theme="winter"] .figma-glass-clean:hover,
+[data-theme="winter"] .figma-glass-border-slide:hover,
+[data-theme="winter"] .card-glass-bg:hover,
+[data-theme="winter"] .timebox-task-card:hover {
+  border-top-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 42%, #303030) !important;
+  border-right-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 42%, #303030) !important;
+  border-bottom-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 42%, #303030) !important;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--theme, var(--winter-edge)) 16%, transparent), 0 16px 34px rgba(0, 0, 0, 0.62) !important;
+}
+
+[data-theme="winter"] .water-progress-ring {
+  border-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Restore the original Water Reminder liquid/wave treatment; only the
+   surrounding widget chrome follows the Winter accent system. */
+[data-theme="winter"] .water-progress-fill {
+  background-color: var(--theme-2, #64748B) !important;
+}
+
+[data-theme="winter"] .water-progress-wave {
+  fill: var(--theme-2, #64748B) !important;
+}
+
+[data-theme="winter"] .winter-settings-page input:focus,
+[data-theme="winter"] .winter-settings-page textarea:focus,
+[data-theme="winter"] .winter-settings-page select:focus,
+[data-theme="winter"] .winter-settings-page button:focus-visible {
+  outline-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 78%, transparent) !important;
+  border-color: color-mix(in srgb, var(--theme, var(--winter-edge)) 60%, #303030) !important;
+}
